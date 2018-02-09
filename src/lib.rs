@@ -61,6 +61,7 @@ pub enum Value {
 
 impl fmt::Display for Value {
     fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
-        self.write_ascii(f).map_err(|_| fmt::Error)
+        // TODO: is there a better way to do this?
+        write!(f, "{}", self.format_ascii().map_err(|_| fmt::Error)?)
     }
 }

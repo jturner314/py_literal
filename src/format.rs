@@ -1,12 +1,19 @@
 use Value;
 use num;
 use std::error::Error;
-use std::fmt::{self, Write};
+use std::io;
 
 quick_error! {
     /// Error formatting a Python literal.
     #[derive(Debug)]
     pub enum FormatError {
+        /// An error caused by the writer.
+        Io(err: io::Error) {
+            description("I/O error")
+            display(x) -> ("{}", x.description())
+            cause(err)
+            from()
+        }
         /// The literal contained an empty set.
         ///
         /// There is no literal representation of an empty set in Python. (`{}`
@@ -15,34 +22,30 @@ quick_error! {
             description("unable to format empty set literal")
             display(x) -> ("{}", x.description())
         }
-        /// An error caused by the writer.
-        Writer(err: fmt::Error) {
-            description("error in format writer")
-            display(x) -> ("{}", x.description())
-            cause(err)
-            from()
-        }
     }
 }
 
 impl Value {
+    /// Formats the value as an ASCII string.
     pub fn format_ascii(&self) -> Result<String, FormatError> {
-        let mut out = String::new();
+        let mut out = Vec::new();
         self.write_ascii(&mut out)?;
-        Ok(out)
+        assert!(out.is_ascii());
+        Ok(unsafe { String::from_utf8_unchecked(out) })
     }
 
-    pub fn write_ascii<W: Write>(&self, mut w: W) -> Result<(), FormatError> {
+    /// Writes the value as ASCII.
+    pub fn write_ascii<W: io::Write>(&self, w: &mut W) -> Result<(), FormatError> {
         match *self {
             Value::String(ref s) => {
-                w.write_str("'")?;
+                w.write_all(b"'")?;
                 for c in s.chars() {
                     match c {
-                        '\\' => w.write_str(r"\\")?,
-                        '\r' => w.write_str(r"\r")?,
-                        '\n' => w.write_str(r"\n")?,
-                        '\'' => w.write_str(r"\'")?,
-                        c if c.is_ascii() => w.write_char(c)?,
+                        '\\' => w.write_all(br"\\")?,
+                        '\r' => w.write_all(br"\r")?,
+                        '\n' => w.write_all(br"\n")?,
+                        '\'' => w.write_all(br"\'")?,
+                        c if c.is_ascii() => write!(w, "{}", c)?,
                         c => match c as u32 {
                             n @ 0...0xff => write!(w, r"\x{:0>2x}", n)?,
                             n @ 0...0xffff => write!(w, r"\u{:0>4x}", n)?,
@@ -51,21 +54,21 @@ impl Value {
                         },
                     }
                 }
-                w.write_str("'")?;
+                w.write_all(b"'")?;
             }
             Value::Bytes(ref bytes) => {
-                w.write_str("b'")?;
+                w.write_all(b"b'")?;
                 for byte in bytes {
                     match *byte {
-                        b'\\' => w.write_str(r"\\")?,
-                        b'\r' => w.write_str(r"\r")?,
-                        b'\n' => w.write_str(r"\n")?,
-                        b'\'' => w.write_str(r"\'")?,
-                        b if b.is_ascii() => w.write_char(b.into())?,
+                        b'\\' => w.write_all(br"\\")?,
+                        b'\r' => w.write_all(br"\r")?,
+                        b'\n' => w.write_all(br"\n")?,
+                        b'\'' => w.write_all(br"\'")?,
+                        b if b.is_ascii() => w.write_all(&[b][..])?,
                         b => write!(w, r"\x{:0>2x}", b)?,
                     }
                 }
-                w.write_str("'")?;
+                w.write_all(b"'")?;
             }
             Value::Integer(ref int) => write!(w, "{}", int)?,
             Value::Float(float) => {
@@ -77,59 +80,70 @@ impl Value {
                 write!(w, "{:e}{:+e}j", re, im)?;
             }
             Value::Tuple(ref tup) => {
-                w.write_str("(")?;
+                w.write_all(b"(")?;
                 match tup.len() {
                     0 => (),
-                    1 => write!(w, "{},", tup[0])?,
+                    1 => {
+                        tup[0].write_ascii(w)?;
+                        w.write_all(b",")?;
+                    }
                     _ => {
-                        write!(w, "{}", tup[0])?;
+                        tup[0].write_ascii(w)?;
                         for value in &tup[1..] {
-                            write!(w, ", {}", value)?;
+                            w.write_all(b", ")?;
+                            value.write_ascii(w)?;
                         }
                     }
                 }
-                w.write_str(")")?;
+                w.write_all(b")")?;
             }
             Value::List(ref list) => {
-                w.write_str("[")?;
+                w.write_all(b"[")?;
                 if !list.is_empty() {
-                    write!(w, "{}", list[0])?;
+                    list[0].write_ascii(w)?;
                     for value in &list[1..] {
-                        write!(w, ", {}", value)?;
+                        w.write_all(b", ")?;
+                        value.write_ascii(w)?;
                     }
                 }
-                w.write_str("]")?;
+                w.write_all(b"]")?;
             }
             Value::Dict(ref dict) => {
-                w.write_str("{")?;
+                w.write_all(b"{")?;
                 if !dict.is_empty() {
-                    write!(w, "{}: {}", dict[0].0, dict[0].1)?;
+                    dict[0].0.write_ascii(w)?;
+                    w.write_all(b": ")?;
+                    dict[0].1.write_ascii(w)?;
                     for elem in &dict[1..] {
-                        write!(w, ", {}: {}", elem.0, elem.1)?;
+                        w.write_all(b", ")?;
+                        elem.0.write_ascii(w)?;
+                        w.write_all(b": ")?;
+                        elem.1.write_ascii(w)?;
                     }
                 }
-                w.write_str("}")?;
+                w.write_all(b"}")?;
             }
             Value::Set(ref set) => {
                 if set.is_empty() {
                     return Err(FormatError::EmptySet);
                 } else {
-                    w.write_str("{")?;
-                    write!(w, "{}", set[0])?;
+                    w.write_all(b"{")?;
+                    set[0].write_ascii(w)?;
                     for value in &set[1..] {
-                        write!(w, ", {}", value)?;
+                        w.write_all(b", ")?;
+                        value.write_ascii(w)?;
                     }
-                    w.write_str("}")?;
+                    w.write_all(b"}")?;
                 }
             }
             Value::Boolean(b) => {
                 if b {
-                    w.write_str("True")?;
+                    w.write_all(b"True")?;
                 } else {
-                    w.write_str("False")?;
+                    w.write_all(b"False")?;
                 }
             }
-            Value::None => w.write_str("None")?,
+            Value::None => w.write_all(b"None")?,
         }
         Ok(())
     }
