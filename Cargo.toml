@@ -1,0 +1,11 @@
+[package]
+name = "py_literal"
+version = "0.1.0"
+authors = ["Jim Turner <py_literal@turner.link>"]
+license = "MIT/Apache-2.0"
+
+[dependencies]
+num = "0.1"
+pest = "1.0"
+pest_derive = "1.0"
+quick-error = "1.2"
