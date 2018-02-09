@@ -76,8 +76,7 @@ impl Value {
                 write!(w, "{:e}", float)?;
             }
             Value::Complex(num::Complex { re, im }) => {
-                // Use scientific notation to make the parts unambiguously floats.
-                write!(w, "{:e}{:+e}j", re, im)?;
+                write!(w, "{}{:+}j", re, im)?;
             }
             Value::Tuple(ref tup) => {
                 w.write_all(b"(")?;
@@ -174,22 +173,10 @@ mod test {
     #[test]
     fn format_complex() {
         use self::Value::*;
-        assert_eq!(
-            "1e0+3e0j",
-            format!("{}", Complex(num::Complex::new(1., 3.)))
-        );
-        assert_eq!(
-            "1e0-3e0j",
-            format!("{}", Complex(num::Complex::new(1., -3.)))
-        );
-        assert_eq!(
-            "-1e0+3e0j",
-            format!("{}", Complex(num::Complex::new(-1., 3.)))
-        );
-        assert_eq!(
-            "-1e0-3e0j",
-            format!("{}", Complex(num::Complex::new(-1., -3.)))
-        );
+        assert_eq!("1+3j", format!("{}", Complex(num::Complex::new(1., 3.))));
+        assert_eq!("1-3j", format!("{}", Complex(num::Complex::new(1., -3.))));
+        assert_eq!("-1+3j", format!("{}", Complex(num::Complex::new(-1., 3.))));
+        assert_eq!("-1-3j", format!("{}", Complex(num::Complex::new(-1., -3.))));
     }
 
     #[test]
@@ -288,7 +275,7 @@ mod test {
     fn format_nested() {
         use self::Value::*;
         assert_eq!(
-            "{'foo': [1, True], {2e0+3e0j}: 4}",
+            "{'foo': [1, True], {2+3j}: 4}",
             format!(
                 "{}",
                 Dict(vec![
