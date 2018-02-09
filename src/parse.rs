@@ -14,22 +14,30 @@ const _GRAMMAR: &'static str = include_str!("grammar.pest");
 struct Parser;
 
 quick_error! {
+    /// Error parsing a Python literal.
     #[derive(Debug)]
     pub enum ParseError {
-        Pest(msg: String) {
-            description("error in pest parser")
+        /// A syntax error.
+        Syntax(msg: String) {
+            description("syntax error")
             display(x) -> ("{}: {}", x.description(), msg)
         }
+        /// An illegal escape sequence in a string or bytes literal.
         IllegalEscapeSequence(msg: String) {
             description("illegal escape sequence in string or bytes")
             display(x) -> ("{}: {}", x.description(), msg)
         }
+        /// An error parsing a float. This might happen if the mantissa or
+        /// exponent in the float literal has too many digits.
         ParseFloat(err: ParseFloatError) {
             description("float parsing error")
             display(x) -> ("{}: {}", x.description(), err)
             cause(err)
             from()
         }
+        /// An error in a numeric cast. For example, this might occur while
+        /// adding an integer and float if the integer is too large to fit in a
+        /// float.
         NumericCast(old: String, new_type: String) {
             description("error casting number")
             display(x) -> ("{}: {} to {}", x.description(), old, new_type)
@@ -40,9 +48,28 @@ quick_error! {
 impl FromStr for Value {
     type Err = ParseError;
 
+    /// Parses a `Value` from a Python literal. The goal is for the parser to
+    /// support everything [`ast.literal_eval()`] does. A few things haven't
+    /// been implemented yet:
+    ///
+    /// * `r`/`R` and `u`/`U` prefixes for string and bytes literals.
+    /// * [string literal concatenation]
+    /// * newlines (except in string literals)
+    /// * parentheses (except as tuple delimiters)
+    ///
+    /// Note that the parser is limited to Python *literals*, not the full
+    /// Python AST, so many things are not supported, such as:
+    ///
+    /// * identifiers
+    /// * formatted string literals (`f`/`F` prefix)
+    /// * binary operators (except for `+` and `-` on numeric literals)
+    /// * function calls
+    ///
+    /// [`ast.literal_eval()`]: https://docs.python.org/3/library/ast.html#ast.literal_eval
+    /// [string literal concatenation]: https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation
     fn from_str(s: &str) -> Result<Self, ParseError> {
         let mut parsed =
-            Parser::parse(Rule::value, s).map_err(|e| ParseError::Pest(format!("{}", e)))?;
+            Parser::parse(Rule::value, s).map_err(|e| ParseError::Syntax(format!("{}", e)))?;
         let (value,) = parse_pairs_as!(parsed, (Rule::value,));
         parse_value(value)
     }
