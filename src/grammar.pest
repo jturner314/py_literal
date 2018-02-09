@@ -1,3 +1,5 @@
+start = { soi ~ value ~ eoi }
+
 // Python literal.
 value = { string | bytes | number_expr | tuple | list | dict | set | boolean | none }
 

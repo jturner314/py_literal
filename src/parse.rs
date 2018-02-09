@@ -69,8 +69,9 @@ impl FromStr for Value {
     /// [string literal concatenation]: https://docs.python.org/3/reference/lexical_analysis.html#string-literal-concatenation
     fn from_str(s: &str) -> Result<Self, ParseError> {
         let mut parsed =
-            Parser::parse(Rule::value, s).map_err(|e| ParseError::Syntax(format!("{}", e)))?;
-        let (value,) = parse_pairs_as!(parsed, (Rule::value,));
+            Parser::parse(Rule::start, s).map_err(|e| ParseError::Syntax(format!("{}", e)))?;
+        let (start,) = parse_pairs_as!(parsed, (Rule::start,));
+        let (value,) = parse_pairs_as!(start.into_inner(), (Rule::value,));
         parse_value(value)
     }
 }
