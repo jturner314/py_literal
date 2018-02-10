@@ -2,8 +2,10 @@
 
 [![Build Status](https://travis-ci.org/jturner314/py_literal.svg?branch=master)](https://travis-ci.org/jturner314/py_literal)
 
-This is a pure-Rust crate for parsing/formatting Python literals. See
+This is a pure-Rust crate for parsing/formatting [Python literals]. See
 [`src/lib.rs`](src/lib.rs) for more information.
+
+[Python literals]: https://docs.python.org/3/reference/lexical_analysis.html#literals
 
 ## License
 

@@ -1,5 +1,7 @@
-//! This crate provides a type `Value` that represents a Python literal.
+//! This crate provides a type `Value` that represents a [Python literal].
 //! `Value` can be parsed from a string and formatted as a string.
+//!
+//! [Python literal]: https://docs.python.org/3/reference/lexical_analysis.html#literals
 //!
 //! # Example
 //!
