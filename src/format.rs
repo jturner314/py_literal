@@ -45,7 +45,7 @@ impl Value {
                         '\r' => w.write_all(br"\r")?,
                         '\n' => w.write_all(br"\n")?,
                         '\'' => w.write_all(br"\'")?,
-                        c if c.is_ascii() => write!(w, "{}", c)?,
+                        c if c.is_ascii() => w.write_all(&[c as u8])?,
                         c => match c as u32 {
                             n @ 0...0xff => write!(w, r"\x{:0>2x}", n)?,
                             n @ 0...0xffff => write!(w, r"\u{:0>4x}", n)?,
@@ -64,7 +64,7 @@ impl Value {
                         b'\r' => w.write_all(br"\r")?,
                         b'\n' => w.write_all(br"\n")?,
                         b'\'' => w.write_all(br"\'")?,
-                        b if b.is_ascii() => w.write_all(&[b][..])?,
+                        b if b.is_ascii() => w.write_all(&[b])?,
                         b => write!(w, r"\x{:0>2x}", b)?,
                     }
                 }
