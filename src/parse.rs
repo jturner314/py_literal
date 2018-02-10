@@ -56,6 +56,7 @@ impl FromStr for Value {
     /// * [string literal concatenation]
     /// * newlines (except in string literals)
     /// * parentheses (except as tuple delimiters)
+    /// * Unicode name escapes in strings (`\N{name}`)
     ///
     /// Note that the parser is limited to Python *literals*, not the full
     /// Python AST, so many things are not supported, such as:
