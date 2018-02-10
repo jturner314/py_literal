@@ -35,6 +35,14 @@ impl Value {
     }
 
     /// Writes the value as ASCII.
+    ///
+    /// This implementation performs a lot of small writes. If individual
+    /// writes are expensive (e.g. if the writer is a [`TcpStream`]), it would
+    /// be a good idea to wrap the writer in a [`BufWriter`] before passing it
+    /// to `.write_ascii()`.
+    ///
+    /// [`TcpStream`]: https://doc.rust-lang.org/std/net/struct.TcpStream.html
+    /// [`BufWriter`]: https://doc.rust-lang.org/std/io/struct.BufWriter.html
     pub fn write_ascii<W: io::Write>(&self, w: &mut W) -> Result<(), FormatError> {
         match *self {
             Value::String(ref s) => {
