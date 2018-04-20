@@ -7,6 +7,10 @@ This is a pure-Rust crate for parsing/formatting [Python literals]. See
 
 [Python literals]: https://docs.python.org/3/reference/lexical_analysis.html#literals
 
+**This crate is a work-in-progress.** It supports only a subset of Python
+literals. See the docs for the `FromStr` implementation for `Value` for
+details.
+
 ## License
 
 Copyright 2018 Jim Turner
