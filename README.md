@@ -7,9 +7,11 @@ This is a pure-Rust crate for parsing/formatting [Python literals]. See
 
 [Python literals]: https://docs.python.org/3/reference/lexical_analysis.html#literals
 
-**This crate is a work-in-progress.** It supports only a subset of Python
-literals. See the docs for the `FromStr` implementation for `Value` for
-details.
+**This crate is a work-in-progress.** The goal is for the parser to support
+everything [`ast.literal_eval()`] does, but it supports only a subset. See the
+docs for the `FromStr` implementation for `Value` for details.
+
+[`ast.literal_eval()`]: https://docs.python.org/3/library/ast.html#ast.literal_eval
 
 ## Contributing
 
