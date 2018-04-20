@@ -11,6 +11,11 @@ This is a pure-Rust crate for parsing/formatting [Python literals]. See
 literals. See the docs for the `FromStr` implementation for `Value` for
 details.
 
+## Contributing
+
+Please feel free to create issues and submit PRs. PRs adding more tests would
+be especially appreciated.
+
 ## License
 
 Copyright 2018 Jim Turner
