@@ -1,7 +1,7 @@
 # py_literal
 
 [![Build status](https://travis-ci.org/jturner314/py_literal.svg?branch=master)](https://travis-ci.org/jturner314/py_literal)
-[![Dependencies status](https://deps.rs/repo/github/jturner314/py_literal/status.svg)](https://deps.rs/repo/github/jturner314/ndarray-npy)
+[![Dependencies status](https://deps.rs/repo/github/jturner314/py_literal/status.svg)](https://deps.rs/repo/github/jturner314/py_literal)
 [![Crate](https://img.shields.io/crates/v/py_literal.svg)](https://crates.io/crates/py_literal)
 [![Documentation](https://docs.rs/py_literal/badge.svg)](https://docs.rs/py_literal)
 
