@@ -16,6 +16,12 @@ docs for the `FromStr` implementation for `Value` for details.
 
 [`ast.literal_eval()`]: https://docs.python.org/3/library/ast.html#ast.literal_eval
 
+## Releases
+
+* **0.1.0**
+
+  * Initial release.
+
 ## Contributing
 
 Please feel free to create issues and submit PRs. PRs adding more tests would
