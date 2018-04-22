@@ -18,6 +18,10 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
+* **0.1.1**
+
+  * Improved crate metadata and documentation (no functional changes).
+
 * **0.1.0**
 
   * Initial release.
