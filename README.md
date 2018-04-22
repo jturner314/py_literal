@@ -1,9 +1,12 @@
 # py_literal
 
-[![Build Status](https://travis-ci.org/jturner314/py_literal.svg?branch=master)](https://travis-ci.org/jturner314/py_literal)
+[![Build status](https://travis-ci.org/jturner314/py_literal.svg?branch=master)](https://travis-ci.org/jturner314/py_literal)
+[![Dependencies status](https://deps.rs/repo/github/jturner314/py_literal/status.svg)](https://deps.rs/repo/github/jturner314/ndarray-npy)
+[![Crate](https://img.shields.io/crates/v/py_literal.svg)](https://crates.io/crates/py_literal)
+[![Documentation](https://docs.rs/py_literal/badge.svg)](https://docs.rs/py_literal)
 
-This is a pure-Rust crate for parsing/formatting [Python literals]. See
-[`src/lib.rs`](src/lib.rs) for more information.
+This is a pure-Rust crate for parsing/formatting [Python literals]. See the
+[documentation](https://docs.rs/py_literal) for more information.
 
 [Python literals]: https://docs.python.org/3/reference/lexical_analysis.html#literals
 
