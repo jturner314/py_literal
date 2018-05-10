@@ -13,7 +13,7 @@
 //! use num::{BigInt, Complex};
 //! use py_literal::Value;
 //!
-//! # fn example() -> Result<(), py_literal::ParseError> {
+//! # fn main() -> Result<(), py_literal::ParseError> {
 //! // Parse a literal value from a string.
 //! let value: Value = "{ 'foo': [5, (7e3,)], 2 - 5j: {b'bar'} }".parse()?;
 //! assert_eq!(
@@ -40,9 +40,6 @@
 //!     "{'foo': [5, (7e3,)], 2-5j: {b'bar'}}",
 //! );
 //! # Ok(())
-//! # }
-//! # fn main() {
-//! #     example().unwrap();
 //! # }
 //! ```
 
