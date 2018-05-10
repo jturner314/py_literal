@@ -385,9 +385,9 @@ mod test {
         for &(input, correct) in &[
             ("''", ""),
             (
-                r"'he\qllo\th\03o\x1bw\
-are\a\'y\u1234o\U00031234u'",
-                "he\\qllo\th\x03o\x1bware\x07'y\u{1234}o\u{31234}u",
+                r#"'he\qllo\th\03o\x1bw\
+a\n\rre\a\'\"y\u1234o\U00031234u'"#,
+                "he\\qllo\th\x03o\x1bwa\n\rre\x07'\"y\u{1234}o\u{31234}u",
             ),
         ] {
             let mut parsed = Parser::parse(Rule::string, input)
@@ -402,9 +402,9 @@ are\a\'y\u1234o\U00031234u'",
         for &(input, correct) in &[
             ("b''", &b""[..]),
             (
-                r"b'he\qllo\th\03o\x1bw\
-are\a\'y\u1234o\U00031234u'",
-                &b"he\\qllo\th\x03o\x1bware\x07'y\\u1234o\\U00031234u"[..],
+                r#"b'he\qllo\th\03o\x1bw\
+a\n\rre\a\'\"y\u1234o\U00031234u'"#,
+                &b"he\\qllo\th\x03o\x1bwa\n\rre\x07'\"y\\u1234o\\U00031234u"[..],
             ),
         ] {
             let mut parsed = Parser::parse(Rule::bytes, input)
@@ -416,13 +416,13 @@ are\a\'y\u1234o\U00031234u'",
 
     #[test]
     fn parse_number_expr_example() {
-        let input = "+-23 + 4.5 -+- -5j - 3e2";
+        let input = "+-23 + 4.5 -+- -5j - 3e2 + 1.2 - 9";
         let mut parsed = Parser::parse(Rule::number_expr, input)
             .unwrap_or_else(|err| panic!("failed to parse: {}", err));
         let expr = parse_number_expr(parse_pairs_as!(parsed, (Rule::number_expr,)).0).unwrap();
         assert_eq!(
             expr,
-            Value::Complex(-23. + 4.5 - 3e2 - Complex::new(0., 5.))
+            Value::Complex(-23. + 4.5 - Complex::new(0., 5.) - 3e2 + 1.2 - 9.)
         );
     }
 
@@ -493,14 +493,15 @@ are\a\'y\u1234o\U00031234u'",
         for &(input, ref correct) in &[
             ("{}", Dict(vec![])),
             (
-                "{3: \"hi\"}",
-                Dict(vec![(Integer(3.into()), String("hi".into()))]),
+                "{ 3: None}",
+                Dict(vec![(Integer(3.into()), None)]),
             ),
             (
-                "{5: 6., \"foo\" : True}",
+                "{5: 6., \"foo\" : True, b'bar' :False }",
                 Dict(vec![
                     (Integer(5.into()), Float(6.)),
                     (String("foo".into()), Boolean(true)),
+                    (Bytes("bar".into()), Boolean(false)),
                 ]),
             ),
         ] {
