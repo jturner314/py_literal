@@ -13,12 +13,12 @@ readme = "README.md"
 travis-ci = { repository = "jturner314/py_literal", branch = "master" }
 
 [dependencies]
-num-bigint = "0.1"
-num-complex = "0.1"
-num-traits = "0.1"
+num-bigint = "0.2"
+num-complex = "0.2"
+num-traits = "0.2"
 pest = "1.0"
 pest_derive = "1.0"
 quick-error = "1.2"
 
 [dev-dependencies]
-num = "0.1"
+num = "0.2"
