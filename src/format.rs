@@ -1,5 +1,5 @@
 use Value;
-use num;
+use num_complex as numc;
 use std::error::Error;
 use std::io;
 
@@ -83,7 +83,7 @@ impl Value {
                 // Use scientific notation to make this unambiguously a float.
                 write!(w, "{:e}", float)?;
             }
-            Value::Complex(num::Complex { re, im }) => {
+            Value::Complex(numc::Complex { re, im }) => {
                 write!(w, "{}{:+}j", re, im)?;
             }
             Value::Tuple(ref tup) => {
@@ -158,7 +158,6 @@ impl Value {
 
 #[cfg(test)]
 mod test {
-    use num;
     use super::*;
 
     #[test]
@@ -181,10 +180,10 @@ mod test {
     #[test]
     fn format_complex() {
         use self::Value::*;
-        assert_eq!("1+3j", format!("{}", Complex(num::Complex::new(1., 3.))));
-        assert_eq!("1-3j", format!("{}", Complex(num::Complex::new(1., -3.))));
-        assert_eq!("-1+3j", format!("{}", Complex(num::Complex::new(-1., 3.))));
-        assert_eq!("-1-3j", format!("{}", Complex(num::Complex::new(-1., -3.))));
+        assert_eq!("1+3j", format!("{}", Complex(numc::Complex::new(1., 3.))));
+        assert_eq!("1-3j", format!("{}", Complex(numc::Complex::new(1., -3.))));
+        assert_eq!("-1+3j", format!("{}", Complex(numc::Complex::new(-1., 3.))));
+        assert_eq!("-1-3j", format!("{}", Complex(numc::Complex::new(-1., -3.))));
     }
 
     #[test]
@@ -292,7 +291,7 @@ mod test {
                         List(vec![Integer(1.into()), Boolean(true)]),
                     ),
                     (
-                        Set(vec![Complex(num::Complex::new(2., 3.))]),
+                        Set(vec![Complex(numc::Complex::new(2., 3.))]),
                         Integer(4.into()),
                     ),
                 ])

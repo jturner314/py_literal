@@ -43,7 +43,9 @@
 //! # }
 //! ```
 
-extern crate num;
+extern crate num_bigint;
+extern crate num_complex;
+extern crate num_traits;
 extern crate pest;
 #[macro_use]
 extern crate pest_derive;
@@ -58,7 +60,8 @@ mod parse;
 pub use format::FormatError;
 pub use parse::ParseError;
 
-use num::{BigInt, Complex};
+use num_bigint as numb;
+use num_complex as numc;
 use std::fmt;
 
 /// Python literal.
@@ -82,14 +85,14 @@ pub enum Value {
     Bytes(Vec<u8>),
     /// Python integer (`int`). Python integers have unlimited precision, so we
     /// use `BigInt`.
-    Integer(BigInt),
+    Integer(numb::BigInt),
     /// Python floating-point number (`float`). The representation and
     /// precision of the Python `float` type varies by the machine where the
     /// program is executing, but `f64` should be good enough.
     Float(f64),
     /// Python complex number (`complex`). The Python `complex` type contains
     /// two `float` values.
-    Complex(Complex<f64>),
+    Complex(numc::Complex<f64>),
     /// Python tuple (`tuple`).
     Tuple(Vec<Value>),
     /// Python list (`list`).
