@@ -1,6 +1,6 @@
 [package]
 name = "py_literal"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Jim Turner <py_literal@turner.link>"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/jturner314/py_literal"

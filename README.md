@@ -19,7 +19,7 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
-* **0.2.0** (not yet released)
+* **0.2.0**
 
   * Updated `num-*` dependencies to 0.2.
   * Switched from depending on all of `num` to depending on the individual
