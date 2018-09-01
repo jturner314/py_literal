@@ -1,5 +1,7 @@
 use Value;
-use num::{BigInt, Complex, Num, ToPrimitive};
+use num_bigint as numb;
+use num_complex as numc;
+use num_traits::{Num, ToPrimitive};
 use pest::iterators::Pair;
 use pest::Parser as ParserTrait;
 use std::error::Error;
@@ -219,27 +221,27 @@ fn parse_number(number: Pair<Rule>) -> Result<Value, ParseError> {
     }
 }
 
-fn parse_integer(int: Pair<Rule>) -> BigInt {
+fn parse_integer(int: Pair<Rule>) -> numb::BigInt {
     debug_assert_eq!(int.as_rule(), Rule::integer);
     let (inner,) = parse_pairs_as!(int.into_inner(), (_,));
     match inner.as_rule() {
         Rule::bin_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
-            BigInt::from_str_radix(&digits, 2).expect(&format!(
+            numb::BigInt::from_str_radix(&digits, 2).expect(&format!(
                 "failure parsing binary integer with digits {}",
                 digits
             ))
         }
         Rule::oct_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
-            BigInt::from_str_radix(&digits, 8).expect(&format!(
+            numb::BigInt::from_str_radix(&digits, 8).expect(&format!(
                 "failure parsing octal integer with digits {}",
                 digits
             ))
         }
         Rule::hex_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
-            BigInt::from_str_radix(&digits, 16).expect(&format!(
+            numb::BigInt::from_str_radix(&digits, 16).expect(&format!(
                 "failure parsing hexadecimal integer with digits {}",
                 digits
             ))
@@ -281,7 +283,7 @@ fn parse_imag(imag: Pair<Rule>) -> Result<Value, ParseError> {
         }
         _ => unreachable!(),
     };
-    Ok(Value::Complex(Complex::new(0., imag)))
+    Ok(Value::Complex(numc::Complex::new(0., imag)))
 }
 
 /// Parses a tuple, list, or set.
@@ -331,7 +333,7 @@ fn parse_value(value: Pair<Rule>) -> Result<Value, ParseError> {
     }
 }
 
-fn int_to_f64(int: BigInt) -> Result<f64, ParseError> {
+fn int_to_f64(int: numb::BigInt) -> Result<f64, ParseError> {
     int.to_f64()
         .ok_or_else(|| ParseError::NumericCast(format!("{}", int), "f64".into()))
 }
@@ -377,7 +379,6 @@ fn sub_numbers(lhs: Value, rhs: Value) -> Result<Value, ParseError> {
 
 #[cfg(test)]
 mod test {
-    use num;
     use super::*;
 
     #[test]
@@ -422,7 +423,7 @@ a\n\rre\a\'\"y\u1234o\U00031234u'"#,
         let expr = parse_number_expr(parse_pairs_as!(parsed, (Rule::number_expr,)).0).unwrap();
         assert_eq!(
             expr,
-            Value::Complex(-23. + 4.5 - Complex::new(0., 5.) - 3e2 + 1.2 - 9.)
+            Value::Complex(-23. + 4.5 - numc::Complex::new(0., 5.) - 3e2 + 1.2 - 9.)
         );
     }
 
@@ -433,7 +434,7 @@ a\n\rre\a\'\"y\u1234o\U00031234u'"#,
             let mut parsed = Parser::parse(Rule::integer, input)
                 .unwrap_or_else(|err| panic!("failed to parse: {}", err));
             let int = parse_integer(parse_pairs_as!(parsed, (Rule::integer,)).0);
-            assert_eq!(int, BigInt::from(2346));
+            assert_eq!(int, numb::BigInt::from(2346));
         }
     }
 
@@ -476,7 +477,7 @@ a\n\rre\a\'\"y\u1234o\U00031234u'"#,
                     Integer(5.into()),
                     Float(6.),
                     String("foo".into()),
-                    Complex(num::Complex::new(2., 7.)),
+                    Complex(numc::Complex::new(2., 7.)),
                 ]),
             ),
         ] {

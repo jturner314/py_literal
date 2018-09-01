@@ -19,6 +19,12 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
+* **0.2.0** (not yet released)
+
+  * Updated `num-*` dependencies to 0.2.
+  * Switched from depending on all of `num` to depending on the individual
+    `num-*` crates.
+
 * **0.1.1**
 
   * Improved crate metadata and documentation (no functional changes).
