@@ -1,8 +1,8 @@
+use crate::Value;
 use num_complex as numc;
 use std::error::Error;
 use std::fmt;
 use std::io;
-use Value;
 
 /// Error formatting a Python literal.
 #[derive(Debug)]
@@ -27,7 +27,7 @@ impl Error for FormatError {
 }
 
 impl fmt::Display for FormatError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use FormatError::*;
         match self {
             Io(err) => write!(f, "I/O error: {}", err),
