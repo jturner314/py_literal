@@ -199,7 +199,10 @@ mod test {
         assert_eq!("1+3j", format!("{}", Complex(numc::Complex::new(1., 3.))));
         assert_eq!("1-3j", format!("{}", Complex(numc::Complex::new(1., -3.))));
         assert_eq!("-1+3j", format!("{}", Complex(numc::Complex::new(-1., 3.))));
-        assert_eq!("-1-3j", format!("{}", Complex(numc::Complex::new(-1., -3.))));
+        assert_eq!(
+            "-1-3j",
+            format!("{}", Complex(numc::Complex::new(-1., -3.)))
+        );
     }
 
     #[test]

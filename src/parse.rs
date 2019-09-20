@@ -123,7 +123,8 @@ fn parse_string_escape_seq(escape_seq: Pair<Rule>) -> Result<char, ParseError> {
             }),
         Rule::hex_escape | Rule::unicode_hex_escape => ::std::char::from_u32(
             u32::from_str_radix(&seq.as_str()[1..], 16).unwrap(),
-        ).ok_or_else(|| {
+        )
+        .ok_or_else(|| {
             ParseError::IllegalEscapeSequence(format!("Hex escape is invalid: \\x{}", seq.as_str()))
         }),
         Rule::name_escape => Err(ParseError::IllegalEscapeSequence(
@@ -511,10 +512,7 @@ a\n\rre\a\'\"y\u1234o\U00031234u'"#,
         use self::Value::*;
         for &(input, ref correct) in &[
             ("{}", Dict(vec![])),
-            (
-                "{ 3: None}",
-                Dict(vec![(Integer(3.into()), None)]),
-            ),
+            ("{ 3: None}", Dict(vec![(Integer(3.into()), None)])),
             (
                 "{5: 6., \"foo\" : True, b'bar' :False }",
                 Dict(vec![
