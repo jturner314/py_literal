@@ -1,12 +1,13 @@
-use Value;
 use num_bigint as numb;
 use num_complex as numc;
 use num_traits::{Num, ToPrimitive};
 use pest::iterators::Pair;
 use pest::Parser as ParserTrait;
 use std::error::Error;
+use std::fmt;
 use std::num::ParseFloatError;
 use std::str::FromStr;
+use Value;
 
 #[cfg(debug_assertions)]
 const _GRAMMAR: &'static str = include_str!("grammar.pest");
@@ -15,35 +16,52 @@ const _GRAMMAR: &'static str = include_str!("grammar.pest");
 #[grammar = "grammar.pest"]
 struct Parser;
 
-quick_error! {
-    /// Error parsing a Python literal.
-    #[derive(Debug)]
-    pub enum ParseError {
-        /// A syntax error.
-        Syntax(msg: String) {
-            description("syntax error")
-            display(x) -> ("{}: {}", x.description(), msg)
+/// Error parsing a Python literal.
+#[derive(Debug)]
+pub enum ParseError {
+    /// A syntax error.
+    Syntax(String),
+    /// An illegal escape sequence in a string or bytes literal.
+    IllegalEscapeSequence(String),
+    /// An error parsing a float. This might happen if the mantissa or exponent
+    /// in the float literal has too many digits.
+    ParseFloat(ParseFloatError),
+    /// An error in a numeric cast. For example, this might occur while adding
+    /// an integer and float if the integer is too large to fit in a float.
+    NumericCast(String, String),
+}
+
+impl Error for ParseError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        use ParseError::*;
+        match self {
+            Syntax(_) => None,
+            IllegalEscapeSequence(_) => None,
+            ParseFloat(err) => Some(err),
+            NumericCast(_, _) => None,
         }
-        /// An illegal escape sequence in a string or bytes literal.
-        IllegalEscapeSequence(msg: String) {
-            description("illegal escape sequence in string or bytes")
-            display(x) -> ("{}: {}", x.description(), msg)
+    }
+}
+
+impl fmt::Display for ParseError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use ParseError::*;
+        match self {
+            Syntax(msg) => write!(f, "syntax error: {}", msg),
+            IllegalEscapeSequence(msg) => {
+                write!(f, "illegal escape sequence in string or bytes: {}", msg)
+            }
+            ParseFloat(err) => write!(f, "float parsing error: {}", err),
+            NumericCast(value, to_type) => {
+                write!(f, "error casting number: {} to {}", value, to_type)
+            }
         }
-        /// An error parsing a float. This might happen if the mantissa or
-        /// exponent in the float literal has too many digits.
-        ParseFloat(err: ParseFloatError) {
-            description("float parsing error")
-            display(x) -> ("{}: {}", x.description(), err)
-            cause(err)
-            from()
-        }
-        /// An error in a numeric cast. For example, this might occur while
-        /// adding an integer and float if the integer is too large to fit in a
-        /// float.
-        NumericCast(old: String, new_type: String) {
-            description("error casting number")
-            display(x) -> ("{}: {} to {}", x.description(), old, new_type)
-        }
+    }
+}
+
+impl From<ParseFloatError> for ParseError {
+    fn from(err: ParseFloatError) -> ParseError {
+        ParseError::ParseFloat(err)
     }
 }
 

@@ -1,27 +1,44 @@
-use Value;
 use num_complex as numc;
 use std::error::Error;
+use std::fmt;
 use std::io;
+use Value;
 
-quick_error! {
-    /// Error formatting a Python literal.
-    #[derive(Debug)]
-    pub enum FormatError {
-        /// An error caused by the writer.
-        Io(err: io::Error) {
-            description("I/O error")
-            display(x) -> ("{}", x.description())
-            cause(err)
-            from()
+/// Error formatting a Python literal.
+#[derive(Debug)]
+pub enum FormatError {
+    /// An error caused by the writer.
+    Io(io::Error),
+    /// The literal contained an empty set.
+    ///
+    /// There is no literal representation of an empty set in Python. (`{}`
+    /// represents an empty `dict`.)
+    EmptySet,
+}
+
+impl Error for FormatError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        use FormatError::*;
+        match self {
+            Io(err) => Some(err),
+            EmptySet => None,
         }
-        /// The literal contained an empty set.
-        ///
-        /// There is no literal representation of an empty set in Python. (`{}`
-        /// represents an empty `dict`.)
-        EmptySet {
-            description("unable to format empty set literal")
-            display(x) -> ("{}", x.description())
+    }
+}
+
+impl fmt::Display for FormatError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use FormatError::*;
+        match self {
+            Io(err) => write!(f, "I/O error: {}", err),
+            EmptySet => write!(f, "unable to format empty set literal"),
         }
+    }
+}
+
+impl From<io::Error> for FormatError {
+    fn from(err: io::Error) -> FormatError {
+        FormatError::Io(err)
     }
 }
 
