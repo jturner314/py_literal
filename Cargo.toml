@@ -8,6 +8,7 @@ description = "Read and write Python literals"
 keywords = ["python"]
 categories = ["parser-implementations", "encoding"]
 readme = "README.md"
+edition = "2018"
 
 [dependencies]
 num-bigint = { version = "0.2", default-features = false, features = ["std"] }

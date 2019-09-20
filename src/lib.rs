@@ -43,20 +43,13 @@
 //! # }
 //! ```
 
-extern crate num_bigint;
-extern crate num_complex;
-extern crate num_traits;
-extern crate pest;
-#[macro_use]
-extern crate pest_derive;
-
 mod format;
 #[macro_use]
 mod parse_macros;
 mod parse;
 
-pub use format::FormatError;
-pub use parse::ParseError;
+pub use crate::format::FormatError;
+pub use crate::parse::ParseError;
 
 use num_bigint as numb;
 use num_complex as numc;
@@ -110,7 +103,7 @@ impl fmt::Display for Value {
     ///
     /// Currently, this just calls `self.format_ascii()`, but that may change
     /// in the future.
-    fn fmt(&self, f: &mut fmt::Formatter) -> Result<(), fmt::Error> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> Result<(), fmt::Error> {
         // TODO: is there a better way to do this?
         write!(f, "{}", self.format_ascii().map_err(|_| fmt::Error)?)
     }

@@ -1,13 +1,14 @@
+use crate::Value;
 use num_bigint as numb;
 use num_complex as numc;
 use num_traits::{Num, ToPrimitive};
 use pest::iterators::Pair;
 use pest::Parser as ParserTrait;
+use pest_derive::Parser;
 use std::error::Error;
 use std::fmt;
 use std::num::ParseFloatError;
 use std::str::FromStr;
-use Value;
 
 #[cfg(debug_assertions)]
 const _GRAMMAR: &'static str = include_str!("grammar.pest");
@@ -44,7 +45,7 @@ impl Error for ParseError {
 }
 
 impl fmt::Display for ParseError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use ParseError::*;
         match self {
             Syntax(msg) => write!(f, "syntax error: {}", msg),
@@ -97,7 +98,7 @@ impl FromStr for Value {
     }
 }
 
-fn parse_string_escape_seq(escape_seq: Pair<Rule>) -> Result<char, ParseError> {
+fn parse_string_escape_seq(escape_seq: Pair<'_, Rule>) -> Result<char, ParseError> {
     debug_assert_eq!(escape_seq.as_rule(), Rule::string_escape_seq);
     let (seq,) = parse_pairs_as!(escape_seq.into_inner(), (_,));
     match seq.as_rule() {
@@ -134,7 +135,7 @@ fn parse_string_escape_seq(escape_seq: Pair<Rule>) -> Result<char, ParseError> {
     }
 }
 
-fn parse_string(string: Pair<Rule>) -> Result<String, ParseError> {
+fn parse_string(string: Pair<'_, Rule>) -> Result<String, ParseError> {
     debug_assert_eq!(string.as_rule(), Rule::string);
     let (string_body,) = parse_pairs_as!(string.into_inner(), (_,));
     match string_body.as_rule() {
@@ -156,7 +157,7 @@ fn parse_string(string: Pair<Rule>) -> Result<String, ParseError> {
     }
 }
 
-fn parse_bytes_escape_seq(escape_seq: Pair<Rule>) -> Result<u8, ParseError> {
+fn parse_bytes_escape_seq(escape_seq: Pair<'_, Rule>) -> Result<u8, ParseError> {
     debug_assert_eq!(escape_seq.as_rule(), Rule::bytes_escape_seq);
     let (seq,) = parse_pairs_as!(escape_seq.into_inner(), (_,));
     match seq.as_rule() {
@@ -185,7 +186,7 @@ fn parse_bytes_escape_seq(escape_seq: Pair<Rule>) -> Result<u8, ParseError> {
     }
 }
 
-fn parse_bytes(bytes: Pair<Rule>) -> Result<Vec<u8>, ParseError> {
+fn parse_bytes(bytes: Pair<'_, Rule>) -> Result<Vec<u8>, ParseError> {
     debug_assert_eq!(bytes.as_rule(), Rule::bytes);
     let (bytes_body,) = parse_pairs_as!(bytes.into_inner(), (_,));
     match bytes_body.as_rule() {
@@ -207,7 +208,7 @@ fn parse_bytes(bytes: Pair<Rule>) -> Result<Vec<u8>, ParseError> {
     }
 }
 
-fn parse_number_expr(expr: Pair<Rule>) -> Result<Value, ParseError> {
+fn parse_number_expr(expr: Pair<'_, Rule>) -> Result<Value, ParseError> {
     debug_assert_eq!(expr.as_rule(), Rule::number_expr);
     let mut result = Value::Integer(0.into());
     let mut neg = false;
@@ -229,7 +230,7 @@ fn parse_number_expr(expr: Pair<Rule>) -> Result<Value, ParseError> {
     Ok(result)
 }
 
-fn parse_number(number: Pair<Rule>) -> Result<Value, ParseError> {
+fn parse_number(number: Pair<'_, Rule>) -> Result<Value, ParseError> {
     debug_assert_eq!(number.as_rule(), Rule::number);
     let (inner,) = parse_pairs_as!(number.into_inner(), (_,));
     match inner.as_rule() {
@@ -240,7 +241,7 @@ fn parse_number(number: Pair<Rule>) -> Result<Value, ParseError> {
     }
 }
 
-fn parse_integer(int: Pair<Rule>) -> numb::BigInt {
+fn parse_integer(int: Pair<'_, Rule>) -> numb::BigInt {
     debug_assert_eq!(int.as_rule(), Rule::integer);
     let (inner,) = parse_pairs_as!(int.into_inner(), (_,));
     match inner.as_rule() {
@@ -275,7 +276,7 @@ fn parse_integer(int: Pair<Rule>) -> numb::BigInt {
     }
 }
 
-fn parse_float(float: Pair<Rule>) -> Result<f64, ParseError> {
+fn parse_float(float: Pair<'_, Rule>) -> Result<f64, ParseError> {
     debug_assert_eq!(float.as_rule(), Rule::float);
     let (inner,) = parse_pairs_as!(float.into_inner(), (_,));
     let mut parsable = String::new();
@@ -291,7 +292,7 @@ fn parse_float(float: Pair<Rule>) -> Result<f64, ParseError> {
     Ok(parsable.parse()?)
 }
 
-fn parse_imag(imag: Pair<Rule>) -> Result<Value, ParseError> {
+fn parse_imag(imag: Pair<'_, Rule>) -> Result<Value, ParseError> {
     debug_assert_eq!(imag.as_rule(), Rule::imag);
     let (inner,) = parse_pairs_as!(imag.into_inner(), (_,));
     let imag: f64 = match inner.as_rule() {
@@ -306,12 +307,12 @@ fn parse_imag(imag: Pair<Rule>) -> Result<Value, ParseError> {
 }
 
 /// Parses a tuple, list, or set.
-fn parse_seq(seq: Pair<Rule>) -> Result<Vec<Value>, ParseError> {
+fn parse_seq(seq: Pair<'_, Rule>) -> Result<Vec<Value>, ParseError> {
     debug_assert!([Rule::tuple, Rule::list, Rule::set].contains(&seq.as_rule()));
     seq.into_inner().map(|elem| parse_value(elem)).collect()
 }
 
-fn parse_dict(dict: Pair<Rule>) -> Result<Vec<(Value, Value)>, ParseError> {
+fn parse_dict(dict: Pair<'_, Rule>) -> Result<Vec<(Value, Value)>, ParseError> {
     debug_assert_eq!(dict.as_rule(), Rule::dict);
     let mut out = Vec::new();
     for elem in dict.into_inner() {
@@ -321,7 +322,7 @@ fn parse_dict(dict: Pair<Rule>) -> Result<Vec<(Value, Value)>, ParseError> {
     Ok(out)
 }
 
-fn parse_boolean(b: Pair<Rule>) -> bool {
+fn parse_boolean(b: Pair<'_, Rule>) -> bool {
     debug_assert_eq!(b.as_rule(), Rule::boolean);
     match b.as_str() {
         "True" => true,
@@ -335,7 +336,7 @@ fn parse_boolean(b: Pair<Rule>) -> bool {
 /// bytes, numbers, tuples, lists, dicts, sets, booleans, and `None`.
 ///
 /// [`ast.literal_eval()`]: https://docs.python.org/3/library/ast.html#ast.literal_eval
-fn parse_value(value: Pair<Rule>) -> Result<Value, ParseError> {
+fn parse_value(value: Pair<'_, Rule>) -> Result<Value, ParseError> {
     debug_assert_eq!(value.as_rule(), Rule::value);
     let (inner,) = parse_pairs_as!(value.into_inner(), (_,));
     match inner.as_rule() {
