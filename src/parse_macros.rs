@@ -4,14 +4,17 @@ macro_rules! debug_assert_match {
         if cfg!(debug_assertions) {
             #[allow(unreachable_patterns)]
             match $value {
-                $pattern => {},
-                _ => panic!("\
-assertion failed: `(value matches pattern)`
+                $pattern => {}
+                _ => panic!(
+                    "assertion failed: `(value matches pattern)`
  pattern: `{}`,
-   value: `{:?}`", stringify!($pattern), $value),
+   value: `{:?}`",
+                    stringify!($pattern),
+                    $value
+                ),
             }
         }
-    }
+    };
 }
 
 /// Extracts inner pairs matching the specified rules from the given pair.
