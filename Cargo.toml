@@ -10,7 +10,7 @@ categories = ["parser-implementations", "encoding"]
 readme = "README.md"
 
 [dependencies]
-num-bigint = "0.2"
+num-bigint = { version = "0.2", default-features = false, features = ["std"] }
 num-complex = "0.2"
 num-traits = "0.2"
 pest = "1.0"
