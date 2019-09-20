@@ -9,9 +9,6 @@ keywords = ["python"]
 categories = ["parser-implementations", "encoding"]
 readme = "README.md"
 
-[badges]
-travis-ci = { repository = "jturner314/py_literal", branch = "master" }
-
 [dependencies]
 num-bigint = "0.2"
 num-complex = "0.2"
