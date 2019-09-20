@@ -19,6 +19,13 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
+* **0.2.1**
+
+  * Added `.is_*()` and `.as_*()` methods to `Value`.
+  * Updated to the new style of `Error`. (Implemented `source`, and removed the
+    non-default implementations of `description` and `cause`.)
+  * Bumped required Rust version to 1.33.
+
 * **0.2.0**
 
   * Updated `num-*` dependencies to 0.2.
