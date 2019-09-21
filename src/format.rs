@@ -74,7 +74,7 @@ impl Value {
                         c => match c as u32 {
                             n @ 0..=0xff => write!(w, r"\x{:0>2x}", n)?,
                             n @ 0..=0xffff => write!(w, r"\u{:0>4x}", n)?,
-                            n @ 0..=0xffffffff => write!(w, r"\U{:0>8x}", n)?,
+                            n @ 0..=0xffff_ffff => write!(w, r"\U{:0>8x}", n)?,
                         },
                     }
                 }

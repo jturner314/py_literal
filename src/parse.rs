@@ -11,7 +11,7 @@ use std::num::ParseFloatError;
 use std::str::FromStr;
 
 #[cfg(debug_assertions)]
-const _GRAMMAR: &'static str = include_str!("grammar.pest");
+const _GRAMMAR: &str = include_str!("grammar.pest");
 
 #[derive(Parser)]
 #[grammar = "grammar.pest"]
@@ -247,30 +247,27 @@ fn parse_integer(int: Pair<'_, Rule>) -> numb::BigInt {
     match inner.as_rule() {
         Rule::bin_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
-            numb::BigInt::from_str_radix(&digits, 2).expect(&format!(
-                "failure parsing binary integer with digits {}",
-                digits
-            ))
+            numb::BigInt::from_str_radix(&digits, 2).unwrap_or_else(|_| {
+                unreachable!("failure parsing binary integer with digits {}", digits)
+            })
         }
         Rule::oct_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
-            numb::BigInt::from_str_radix(&digits, 8).expect(&format!(
-                "failure parsing octal integer with digits {}",
-                digits
-            ))
+            numb::BigInt::from_str_radix(&digits, 8).unwrap_or_else(|_| {
+                unreachable!("failure parsing octal integer with digits {}", digits)
+            })
         }
         Rule::hex_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
-            numb::BigInt::from_str_radix(&digits, 16).expect(&format!(
-                "failure parsing hexadecimal integer with digits {}",
-                digits
-            ))
+            numb::BigInt::from_str_radix(&digits, 16).unwrap_or_else(|_| {
+                unreachable!("failure parsing hexadecimal integer with digits {}", digits)
+            })
         }
         Rule::dec_integer => {
             let digits: String = inner.into_inner().map(|digit| digit.as_str()).collect();
             digits
                 .parse()
-                .expect(&format!("failure parsing integer with digits {}", digits))
+                .unwrap_or_else(|_| unreachable!("failure parsing integer with digits {}", digits))
         }
         _ => unreachable!(),
     }
@@ -309,7 +306,7 @@ fn parse_imag(imag: Pair<'_, Rule>) -> Result<Value, ParseError> {
 /// Parses a tuple, list, or set.
 fn parse_seq(seq: Pair<'_, Rule>) -> Result<Vec<Value>, ParseError> {
     debug_assert!([Rule::tuple, Rule::list, Rule::set].contains(&seq.as_rule()));
-    seq.into_inner().map(|elem| parse_value(elem)).collect()
+    seq.into_inner().map(parse_value).collect()
 }
 
 fn parse_dict(dict: Pair<'_, Rule>) -> Result<Vec<(Value, Value)>, ParseError> {
