@@ -65,7 +65,8 @@ macro_rules! parse_pairs_as {
         {
             let iter = &mut $pair;
             let out = parse_pairs_as!(@recur iter, (), ($($rules),*,));
-            debug_assert_match!(Option::None, iter.next());
+            let tmp = iter.next();
+            debug_assert_match!(None, tmp);
             out
         }
     };

@@ -1,4 +1,4 @@
-start = { soi ~ value ~ eoi }
+start = { SOI ~ value ~ EOI }
 
 // Python literal.
 value = { string | bytes | number_expr | tuple | list | dict | set | boolean | none }
@@ -6,43 +6,43 @@ value = { string | bytes | number_expr | tuple | list | dict | set | boolean | n
 // Strings: "string", 'string', """string""", and '''string'''.
 // Raw strings are not implemented.
 string = ${
-    (push("\"" | "'") ~ short_string_body ~ pop) |
-    (push("\"\"\"" | "'''") ~ long_string_body ~ pop)
+    (PUSH("\"" | "'") ~ short_string_body ~ POP) |
+    (PUSH("\"\"\"" | "'''") ~ long_string_body ~ POP)
 }
 short_string_body = ${
     (short_string_non_escape | line_continuation_seq | string_escape_seq | string_unknown_escape)*
 }
 short_string_non_escape = @{
-    (!("\\" | newline | peek) ~ any)+
+    (!("\\" | newline | PEEK) ~ ANY)+
 }
 long_string_body = ${
     (long_string_non_escape | line_continuation_seq | string_escape_seq | string_unknown_escape)*
 }
 long_string_non_escape = @{
-    (!("\\" | peek) ~ any)+
+    (!("\\" | PEEK) ~ ANY)+
 }
 string_escape_seq = ${ "\\" ~ (char_escape | octal_escape | hex_escape | unicode_hex_escape | name_escape) }
 unicode_hex_escape = @{ "u" ~ hex_digit{4} | "U" ~ hex_digit{8} }
-name_escape = @{ "N{" ~ (!"}" ~ any)* ~ "}" }
-string_unknown_escape = @{ "\\" ~ any }
+name_escape = @{ "N{" ~ (!"}" ~ ANY)* ~ "}" }
+string_unknown_escape = @{ "\\" ~ ANY }
 
 // Bytes: b"bytes", b'bytes', b"""bytes""", b'''bytes''', B"bytes", ...
 // Raw bytes are not implemented.
 bytes = ${
-    (("b" | "B") ~ push("\"" | "'") ~ short_bytes_body ~ pop) |
-    (("b" | "B") ~ push("\"\"\"" | "'''") ~ long_bytes_body ~ pop)
+    (("b" | "B") ~ PUSH("\"" | "'") ~ short_bytes_body ~ POP) |
+    (("b" | "B") ~ PUSH("\"\"\"" | "'''") ~ long_bytes_body ~ POP)
 }
 short_bytes_body = ${
     (short_bytes_non_escape | line_continuation_seq | bytes_escape_seq | bytes_unknown_escape)*
 }
 short_bytes_non_escape = @{
-    (!("\\" | newline | peek) ~ ascii_char)+
+    (!("\\" | newline | PEEK) ~ ascii_char)+
 }
 long_bytes_body = ${
     (long_bytes_non_escape | line_continuation_seq | bytes_escape_seq | bytes_unknown_escape)*
 }
 long_bytes_non_escape = @{
-    (!("\\" | peek) ~ ascii_char)+
+    (!("\\" | PEEK) ~ ascii_char)+
 }
 bytes_escape_seq = ${ "\\" ~ (char_escape | octal_escape | hex_escape) }
 bytes_unknown_escape = @{ "\\" ~ ascii_char }
@@ -103,4 +103,4 @@ digit = @{ '0'..'9' }
 oct_digit = @{ '0'..'7' }
 bin_digit = @{ '0'..'1' }
 newline = @{ "\r\n" | "\n" | "\r" }
-whitespace = _{ " " | "\t" | "\x0C" }
+WHITESPACE = _{ " " | "\t" | "\x0C" }
