@@ -93,7 +93,7 @@ impl FromStr for Value {
         let mut parsed =
             Parser::parse(Rule::start, s).map_err(|e| ParseError::Syntax(format!("{}", e)))?;
         let (start,) = parse_pairs_as!(parsed, (Rule::start,));
-        let (value,) = parse_pairs_as!(start.into_inner(), (Rule::value,));
+        let (value, _,) = parse_pairs_as!(start.into_inner(), (Rule::value, Rule::EOI));
         parse_value(value)
     }
 }
