@@ -2,15 +2,16 @@
 macro_rules! debug_assert_match {
     ($pattern:pat, $value:expr) => {
         if cfg!(debug_assertions) {
+            let value = $value;
             #[allow(unreachable_patterns)]
-            match $value {
+            match value {
                 $pattern => {}
                 _ => panic!(
                     "assertion failed: `(value matches pattern)`
  pattern: `{}`,
    value: `{:?}`",
                     stringify!($pattern),
-                    $value
+                    value
                 ),
             }
         }
