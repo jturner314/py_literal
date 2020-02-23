@@ -67,12 +67,12 @@ use std::fmt;
 #[derive(Clone, Debug, PartialEq)]
 pub enum Value {
     /// Python string (`str`). When parsing, backslash escapes are interpreted.
-    /// When formatting, backslash escapes are used to ensure the result is
+    /// When formatting, backslash escapes are used to ensure the result
     /// contains only ASCII chars.
     String(String),
     /// Python byte sequence (`bytes`). When parsing, backslash escapes are
     /// interpreted. When formatting, backslash escapes are used to ensure the
-    /// result is contains only ASCII chars.
+    /// result contains only ASCII chars.
     Bytes(Vec<u8>),
     /// Python integer (`int`). Python integers have unlimited precision, so we
     /// use `BigInt`.
