@@ -19,6 +19,10 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
+* **0.2.2**
+
+  * Updated `pest` and `pest_derive` dependencies to `2.0`.
+
 * **0.2.1**
 
   * Added `.is_*()` and `.as_*()` methods to `Value`.
