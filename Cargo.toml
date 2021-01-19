@@ -11,11 +11,11 @@ readme = "README.md"
 edition = "2018"
 
 [dependencies]
-num-bigint = { version = "0.2", default-features = false, features = ["std"] }
-num-complex = "0.2"
+num-bigint = { version = "0.3", default-features = false, features = ["std"] }
+num-complex = "0.3"
 num-traits = "0.2"
 pest = "2.0"
 pest_derive = "2.0"
 
 [dev-dependencies]
-num = "0.2"
+num = "0.3"
