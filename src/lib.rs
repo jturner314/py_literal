@@ -112,10 +112,7 @@ impl fmt::Display for Value {
 impl Value {
     /// Returns `true` if `self` is `Value::String`. Returns `false` otherwise.
     pub fn is_string(&self) -> bool {
-        match self {
-            Value::String(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::String(_))
     }
 
     /// If `self` is `Value::String`, returns the associated string. Returns `None` otherwise.
@@ -128,10 +125,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Bytes`. Returns `false` otherwise.
     pub fn is_bytes(&self) -> bool {
-        match self {
-            Value::Bytes(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Bytes(_))
     }
 
     /// If `self` is `Value::Bytes`, returns the associated bytes. Returns `None` otherwise.
@@ -144,10 +138,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Integer`. Returns `false` otherwise.
     pub fn is_integer(&self) -> bool {
-        match self {
-            Value::Integer(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Integer(_))
     }
 
     /// If `self` is `Value::Integer`, returns the associated integer. Returns `None` otherwise.
@@ -160,10 +151,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Float`. Returns `false` otherwise.
     pub fn is_float(&self) -> bool {
-        match self {
-            Value::Float(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Float(_))
     }
 
     /// If `self` is `Value::Float`, returns the associated float. Returns `None` otherwise.
@@ -176,10 +164,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Complex`. Returns `false` otherwise.
     pub fn is_complex(&self) -> bool {
-        match self {
-            Value::Complex(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Complex(_))
     }
 
     /// If `self` is `Value::Complex`, returns the associated complex number. Returns `None` otherwise.
@@ -192,10 +177,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Tuple`. Returns `false` otherwise.
     pub fn is_tuple(&self) -> bool {
-        match self {
-            Value::Tuple(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Tuple(_))
     }
 
     /// If `self` is `Value::Tuple`, returns the associated data. Returns `None` otherwise.
@@ -208,10 +190,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::List`. Returns `false` otherwise.
     pub fn is_list(&self) -> bool {
-        match self {
-            Value::List(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::List(_))
     }
 
     /// If `self` is `Value::List`, returns the associated data. Returns `None` otherwise.
@@ -224,10 +203,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Dict`. Returns `false` otherwise.
     pub fn is_dict(&self) -> bool {
-        match self {
-            Value::Dict(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Dict(_))
     }
 
     /// If `self` is `Value::Dict`, returns the associated data. Returns `None` otherwise.
@@ -240,10 +216,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Set`. Returns `false` otherwise.
     pub fn is_set(&self) -> bool {
-        match self {
-            Value::Set(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Set(_))
     }
 
     /// If `self` is `Value::Set`, returns the associated data. Returns `None` otherwise.
@@ -256,10 +229,7 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::Boolean`. Returns `false` otherwise.
     pub fn is_boolean(&self) -> bool {
-        match self {
-            Value::Boolean(_) => true,
-            _ => false,
-        }
+        matches!(self, Value::Boolean(_))
     }
 
     /// If `self` is `Value::Boolean`, returns the associated data. Returns `None` otherwise.
@@ -272,9 +242,6 @@ impl Value {
 
     /// Returns `true` if `self` is `Value::None`. Returns `false` otherwise.
     pub fn is_none(&self) -> bool {
-        match self {
-            Value::None => true,
-            _ => false,
-        }
+        matches!(self, Value::None)
     }
 }
