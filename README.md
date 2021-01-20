@@ -19,9 +19,16 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
+* **0.3.0** (to be released)
+
+  * Updated `num-bigint` and `num-complex` dependencies to `0.3`.
+  * Disabled default features of `num-complex` and `num-traits` dependencies.
+  * Disabled `std` feature of `num-bigint` dependency.
+  * Bumped required Rust version to 1.42.
+
 * **0.2.2**
 
-  * Updated `pest` and `pest_derive` dependencies to `2.0`.
+  * Updated `pest` and `pest_derive` dependencies to `2.0`, by @nagisa.
 
 * **0.2.1**
 
