@@ -19,7 +19,7 @@ docs for the `FromStr` implementation for `Value` for details.
 
 ## Releases
 
-* **0.3.0** (to be released)
+* **0.3.0**
 
   * Updated `num-bigint` and `num-complex` dependencies to `0.3`.
   * Disabled default features of `num-complex` and `num-traits` dependencies.
