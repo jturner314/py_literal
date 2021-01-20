@@ -58,7 +58,7 @@ be especially appreciated.
 
 ## License
 
-Copyright 2018 Jim Turner
+Copyright 2018–2021 Jim Turner and `py_literal` developers
 
 Licensed under the [Apache License, Version 2.0](LICENSE-APACHE), or the [MIT
 license](LICENSE-MIT), at your option. You may not use this project except in
