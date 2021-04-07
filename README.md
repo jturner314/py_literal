@@ -1,6 +1,6 @@
 # py_literal
 
-[![Build status](https://travis-ci.com/jturner314/py_literal.svg?branch=master)](https://travis-ci.com/jturner314/py_literal)
+[![Continuous integration](https://github.com/jturner314/py_literal/actions/workflows/ci.yml/badge.svg)](https://github.com/jturner314/py_literal/actions/workflows/ci.yml)
 [![Coverage](https://codecov.io/gh/jturner314/py_literal/branch/master/graph/badge.svg)](https://codecov.io/gh/jturner314/py_literal)
 [![Dependencies status](https://deps.rs/repo/github/jturner314/py_literal/status.svg)](https://deps.rs/repo/github/jturner314/py_literal)
 [![Crate](https://img.shields.io/crates/v/py_literal.svg)](https://crates.io/crates/py_literal)
