@@ -4,6 +4,7 @@ version = "0.3.0"
 authors = ["Jim Turner <py_literal@turner.link>"]
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/jturner314/py_literal"
+documentation = "https://docs.rs/py_literal"
 description = "Read and write Python literals"
 keywords = ["python"]
 categories = ["parser-implementations", "encoding"]
